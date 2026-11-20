@@ -1,0 +1,62 @@
+name: EDK2 ARM64 FVP reference build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-fvp-reference:
+    name: Build upstream ARM64 FVP reference (not Redmi firmware)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            uuid-dev \
+            acpica-tools \
+            gcc-aarch64-linux-gnu \
+            nasm \
+            python3 \
+            python3-pip \
+            git
+
+      - name: Fetch upstream EDK2 sources
+        run: |
+          git clone --depth 1 https://github.com/tianocore/edk2.git
+          git clone --depth 1 https://github.com/tianocore/edk2-platforms.git
+          git -C edk2 submodule update --init --recursive
+          echo "EDK2 revision: $(git -C edk2 rev-parse HEAD)"
+          echo "edk2-platforms revision: $(git -C edk2-platforms rev-parse HEAD)"
+
+      - name: Build ARM64 FVP reference platform
+        shell: bash
+        run: |
+          set -euxo pipefail
+          export WORKSPACE="${GITHUB_WORKSPACE}"
+          export PACKAGES_PATH="${WORKSPACE}/edk2:${WORKSPACE}/edk2-platforms"
+          export GCC5_AARCH64_PREFIX="aarch64-linux-gnu-"
+          cd "${WORKSPACE}/edk2"
+          source edksetup.sh
+          make -C BaseTools
+          build \
+            -a AARCH64 \
+            -t GCC5 \
+            -p Platform/ARM/VExpressPkg/ArmVExpress-FVP-AArch64.dsc \
+            -b DEBUG
+          test -s "${WORKSPACE}/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC5/FV/FVP_AARCH64_EFI.fd"
+
+      - name: Upload FVP reference artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fvp-reference-not-phone-firmware
+          path: edk2/Build/ArmVExpress-FVP-AArch64/DEBUG_GCC5/FV/FVP_AARCH64_EFI.fd
+          if-no-files-found: error
+          retention-days: 7
