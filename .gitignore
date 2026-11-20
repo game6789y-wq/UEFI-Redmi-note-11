@@ -1,0 +1,10 @@
+Build/
+Conf/.cache/
+*.efi
+*.fd
+*.bin
+*.img
+*.map
+*.sym
+*.pdb
+*.log
