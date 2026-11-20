@@ -31,6 +31,7 @@ These software and capacity details are owner-provided. They do not establish th
 - [Device build profile](docs/device-build-profile.md) — owner-confirmed model, software build, RAM, and storage.
 - [Platform research](docs/platform-research.md) — public source-code leads and remaining platform blockers.
 - [Android device-tree review](docs/android-device-tree-review.md) — reviewed Android `BoardConfig.mk` and board compatibility metadata, with UEFI-specific caveats.
+- [EDK II platform requirements](docs/edk2-platform-requirements.md) — boot-model decision, evidence gates, candidate EDK II components, and safe first milestone.
 - [Hardware notes](docs/hardware.md) — device facts and open questions.
 - [Bring-up plan](docs/bringup-plan.md) — staged development and validation plan.
 - [Safety policy](docs/safety.md) — non-destructive testing and recovery requirements.
@@ -39,6 +40,7 @@ These software and capacity details are owner-provided. They do not establish th
 
 - Research/documentation scaffold: **present**.
 - Public Android device-tree configuration review: **documented**.
+- EDK II platform requirements and evidence gates: **documented**.
 - Device-specific EDK II DSC/FDF and platform initialization: **not implemented**.
 - Verified Qualcomm/Xiaomi boot-chain handoff: **not established**.
 - Verified DRAM map and reserved-memory layout: **not established**.
